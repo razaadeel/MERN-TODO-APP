@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const logger = require('morgan');
 const api = require('./routes/api-routes');
 const path = require('path');
-const db =require('./config/keys').mongoURI;
+const db = require('./config/keys.js').mongoURI;
 
 const app = express();
 
@@ -14,6 +14,7 @@ app.use(logger('dev'));
 
 mongoose.connect(db, { useNewUrlParser: true })
     .then(() => {
+        console.log(db);
         console.log('connected to the database');
     })
     .catch(err => {
