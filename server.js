@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const logger = require('morgan');
 const api = require('./routes/api-routes');
 const path = require('path');
+const db =require('./config/keys').mongoURI;
 
 const app = express();
 
@@ -11,15 +12,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(logger('dev'));
 
-mongoose.connect('mongodb://localhost/testdb', { useNewUrlParser: true })
+mongoose.connect(db, { useNewUrlParser: true })
     .then(() => {
         console.log('connected to the database');
     })
     .catch(err => {
         console.log("DB connection error")
+        console.log(err.message);
     })
-let db = mongoose.connection;
-
 
 app.use('/api', api);
 
