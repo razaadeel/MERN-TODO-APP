@@ -9,27 +9,28 @@ import {
     Input
 } from 'reactstrap';
 import { connect } from 'react-redux';
-import { addItem } from '../store/action/itemAction';
+import { editItem } from '../store/action/itemAction';
 
-class ItemModal extends React.Component {
+class EditModal extends React.Component {
     constructor() {
         super();
         this.state = {
             modal: false,
             name: '',
+            id: '',
             alert: true
         }
     }
-
     toggle = () => {
         this.setState({
-            modal: !this.state.modal
+            modal: !this.state.modal,
+            name: this.props.value,
+            id: this.props.id
         })
     }
 
     onChange = (e) => {
         this.setState({ name: e.target.value })
-
         if (this.state.alert === false) {
             this.setState({ alert: true })
         }
@@ -40,9 +41,11 @@ class ItemModal extends React.Component {
 
     }
 
-    add = () => {
+    edit = () => {
+
+
         if (this.state.name) {
-            this.props.addItem({ name: this.state.name })
+            this.props.editItem(this.state.name, this.state.id)
             this.toggle();
             this.setState({ name: '' })
         }
@@ -52,29 +55,30 @@ class ItemModal extends React.Component {
     }
 
     render() {
-        console.log(this.state.name)
         return (
-            <div>
-                <Button color="dark" style={{ marginBottom: '2rem' }} onClick={this.toggle}>
-                    Add Item
+            <div style={{ display: 'inline'}}>
+                <Button color="info" style={{ marginLeft: '2rem' }} onClick={this.toggle}>
+                    Edit
                  </Button>
 
                 <Modal isOpen={this.state.modal} toggle={this.toggle}>
                     <ModalHeader toggle={this.toggle}>
-                        Add to Shopping List
+                        Edit Item in Shopping List
                     </ModalHeader>
 
                     <ModalBody>
                         <Form onSubmit={this.Submit}>
                             <FormGroup>
-                                <Input type='text' name="name" placeholder="Add Item" onChange={this.onChange.bind(this)} />
+                                <Input type='text' name="name"
+                                    value={this.state.name}
+                                    onChange={this.onChange.bind(this)} />
                                 {
                                     this.state.alert === false ?
                                         <p style={{ color: 'red' }}> Please enter a value </p>
                                         :
                                         null
                                 }
-                                <Button color="dark" style={{ marginTop: '2rem' }} block onClick={this.add}>Add Item</Button>
+                                <Button color="info" style={{ marginTop: '2rem' }} block onClick={this.edit}>Done</Button>
                             </FormGroup>
                         </Form>
                     </ModalBody>
@@ -84,6 +88,6 @@ class ItemModal extends React.Component {
     }
 }
 
-export default connect(null, { addItem })(ItemModal);
+export default connect(null, { editItem })(EditModal);
 
 

@@ -2,7 +2,6 @@ const router = require('express').Router();
 //Item Model
 const Item = require('../models/Items');
 
-
 //Route GET /api
 ///Get all items
 router.get('/', (req, res) => {
@@ -18,7 +17,10 @@ router.post('/', (req, res) => {
         name: req.body.name
     })
 
-    newItem.save().then(item => res.json(item));
+    newItem.save().then(item => res.json(item))
+    .catch(err=>{
+        console.log(err.message)
+    });
 })
 
 //Route DELETE /api
@@ -28,6 +30,15 @@ router.delete('/:id', (req, res) => {
         .then(item => item.remove()
             .then(() => res.json({ success: true }))
         )
+        .catch(err => { res.status(404).json({ success: false }) })
+})
+
+router.put('/:id/:name', (req, res) => {
+    Item.updateOne(
+        { _id: req.params.id },
+        { name: req.params.name }
+    )
+        .then(() => res.json({ success: true }))
         .catch(err => { res.status(404).json({ success: false }) })
 })
 module.exports = router;

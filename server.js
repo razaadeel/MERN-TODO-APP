@@ -12,9 +12,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(logger('dev'));
 
-mongoose.connect(db, { useNewUrlParser: true })
+mongoose.connect(db, {useNewUrlParser: true })
     .then(() => {
-        console.log(db);
         console.log('connected to the database');
     })
     .catch(err => {
@@ -36,5 +35,5 @@ if (process.env.NODE_ENV === 'production') {
 let port = process.env.PORT || 8080;
 
 app.listen(port, () => {
-    console.log("Server runninng on port 8080");
+    console.log("server running on: "+port);
 });
