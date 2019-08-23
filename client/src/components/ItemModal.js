@@ -52,7 +52,6 @@ class ItemModal extends React.Component {
     }
 
     render() {
-        console.log(this.state.name)
         return (
             <div>
                 <Button color="dark" style={{ marginBottom: '2rem' }} onClick={this.toggle}>

@@ -18,7 +18,8 @@ class EditModal extends React.Component {
             modal: false,
             name: '',
             id: '',
-            alert: true
+            alert: true,
+            loginAlert: false
         }
     }
     toggle = () => {
@@ -43,20 +44,25 @@ class EditModal extends React.Component {
 
     edit = () => {
 
+        if (this.props.isAuthenticated) {
+            if (this.state.name) {
+                this.props.editItem(this.state.name, this.state.id)
+                this.toggle();
+                this.setState({ name: '' })
+            }
+            else {
+                this.setState({ alert: false })
+            }
 
-        if (this.state.name) {
-            this.props.editItem(this.state.name, this.state.id)
-            this.toggle();
-            this.setState({ name: '' })
         }
-        else {
-            this.setState({ alert: false })
+        else{
+            this.toggle();
         }
     }
 
     render() {
         return (
-            <div style={{ display: 'inline'}}>
+            <div style={{ display: 'inline' }}>
                 <Button color="info" style={{ marginLeft: '2rem' }} onClick={this.toggle}>
                     Edit
                  </Button>
@@ -88,6 +94,12 @@ class EditModal extends React.Component {
     }
 }
 
-export default connect(null, { editItem })(EditModal);
+const mapStateToProps = (state) => (
+    {
+        isAuthenticated: state.auth.isAuthenticated
+    }
+)
+
+export default connect(mapStateToProps, { editItem })(EditModal);
 
 

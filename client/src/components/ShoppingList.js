@@ -6,7 +6,7 @@ import { getItems, deleteItem } from '../store/action/itemAction';
 import EditModal from './EditModal'
 
 class ShoppingList extends Component {
-    UNSAFE_componentWillMount() {
+    componentDidMount() {
         this.props.getItems();
     }
 
@@ -19,23 +19,35 @@ class ShoppingList extends Component {
             <Container>
                 <ListGroup>
                     <TransitionGroup>
-                        {
+                        {this.props.item ?
                             this.props.item.items.map(({ _id, name }) => (
                                 <CSSTransition key={_id} timeout={500} classNames="fade">
                                     <ListGroupItem>
-                                        <Button
-                                            color="danger"
-                                            size="sm"
-                                            style={{ marginRight: "0.5em" }}
-                                            onClick={this.removeItem.bind(this, _id)}>
-                                            <b>X</b>
-                                        </Button>
 
+                                        {
+                                            this.props.isAuthenticated ?
+                                                <Button
+                                                    color="danger"
+                                                    size="sm"
+                                                    style={{ marginRight: "0.5em" }}
+                                                    onClick={this.removeItem.bind(this, _id)}>
+                                                    <b>X</b>
+                                                </Button>
+                                                : null
+                                        }
                                         {name}
-                                        <EditModal  value = {name} id={_id}/>
+                                        {
+                                            this.props.isAuthenticated ?
+                                                <EditModal value={name} id={_id} />
+                                                :
+                                                null
+                                        }
+
                                     </ListGroupItem>
                                 </CSSTransition>
                             ))
+                            :
+                            null
                         }
                     </TransitionGroup>
                 </ListGroup>
@@ -46,7 +58,8 @@ class ShoppingList extends Component {
 
 const mapStateToProps = (state) => (
     {
-        item: state.item
+        item: state.item,
+        isAuthenticated: state.auth.isAuthenticated
     }
 )
 

@@ -3,27 +3,40 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import AppNavaBar from './components/AppNavBar';
 import ShoppingList from './components/ShoppingList';
-import { Provider } from 'react-redux';
 import store from './store';
 import ItemModal from './components/ItemModal';
 import { Container } from 'reactstrap';
-
+import { loadUser } from './store/action/authAction';
+import { connect } from 'react-redux';
 class App extends React.Component {
+
+  componentDidMount() {
+    store.dispatch(loadUser())
+  }
 
   render() {
     return (
-      <Provider store={store}>
-        <div>
-          <AppNavaBar />
+      <div>
+        <AppNavaBar />
 
-          <Container>
-            <ItemModal />
-            <ShoppingList />
-          </Container>
-        </div>
-      </Provider>
-
+        <Container>
+          {
+            this.props.isAuthenticated ?
+              <ItemModal />
+              :
+              null
+          }
+          <ShoppingList />
+        </Container>
+      </div>
     )
   }
 }
-export default App;
+
+const mapStateToProps = (state) => (
+  {
+    isAuthenticated: state.auth.isAuthenticated
+  }
+)
+
+export default connect(mapStateToProps, null)(App);

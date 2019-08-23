@@ -1,18 +1,19 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 const logger = require('morgan');
-const api = require('./routes/api-routes');
+const items = require('./routes/api/item-route');
 const path = require('path');
-const db = require('./config/keys.js').mongoURI;
+const config = require('config');
 
 const app = express();
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.json());
 app.use(logger('dev'));
 
-mongoose.connect(db, {useNewUrlParser: true })
+
+const db = config.get('mongoURI');
+
+mongoose.connect(db, {useNewUrlParser: true, useCreateIndex: true})
     .then(() => {
         console.log('connected to the database');
     })
@@ -21,7 +22,9 @@ mongoose.connect(db, {useNewUrlParser: true })
         console.log(err.message);
     })
 
-app.use('/api', api);
+app.use('/api/items', items);
+app.use('/api/users', require('./routes/api/user-route'));
+app.use('/api/auth', require('./routes/api/auth-route'))
 
 //serve static assets if in production
 if (process.env.NODE_ENV === 'production') {
@@ -35,5 +38,5 @@ if (process.env.NODE_ENV === 'production') {
 let port = process.env.PORT || 8080;
 
 app.listen(port, () => {
-    console.log("server running on: "+port);
+    console.log("server running on: " + port);
 });
